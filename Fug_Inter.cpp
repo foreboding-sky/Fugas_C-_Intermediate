@@ -247,3 +247,119 @@ public:
 		cout << start_time;
 	}
 };
+
+class GameManager
+{
+	vector<Session> GameSessions;
+	PlayerManager pl_manager;
+	HeroManager hero_manager;
+	TeamManager team_manager;
+public:
+	GameManager(PlayerManager _pl_manager, HeroManager _hero_manager)
+		: pl_manager(_pl_manager), hero_manager(_hero_manager)
+	{
+	}
+
+	void PerformGameSession(PlayerManager& pl_manager)
+	{
+		vector<Player> random_players;
+		vector<Hero> random_heroes;
+
+		int p_it;
+		int rnd_player_it;
+		vector<int> players_buffer(pl_manager.players.size());
+		iota(players_buffer.begin(), players_buffer.end(), 0);
+
+		int h_it;
+		int rnd_hero_it;
+		vector<int> heroes_buffer(hero_manager.heroes.size());
+		iota(heroes_buffer.begin(), heroes_buffer.end(), 0);
+
+		team_manager.ClearTeams();
+
+		for (int j = 0; j < 2; j++)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				p_it = rand() % players_buffer.size();
+				rnd_player_it = players_buffer[p_it];
+				players_buffer.erase(players_buffer.begin() + p_it);
+				random_players.push_back(pl_manager.players[rnd_player_it]);
+
+				h_it = rand() % heroes_buffer.size();
+				rnd_hero_it = heroes_buffer[h_it];
+				heroes_buffer.erase(heroes_buffer.begin() + h_it);
+				random_heroes.push_back(hero_manager.heroes[rnd_hero_it]);
+			}
+			team_manager.GenerateNewTeam(random_players, random_heroes, "Team " + to_string(j + 1));
+			random_players.clear();
+			random_heroes.clear();
+		}
+
+		for (int j = 0; j < team_manager.teams.size() - 1; j++)
+		{
+			Session temp(team_manager.teams[j], team_manager.teams[j + 1]);
+
+			for (int i = 0; i < temp.team_one.players.size(); i++)
+			{
+				pl_manager.ChangeRank(temp.team_one.players[i].player.id, -25);
+				pl_manager.ChangeRank(temp.team_two.players[i].player.id, -25);
+				pl_manager.ChangeRank(temp.winner.players[i].player.id, 50);
+				temp.winner.players[i].player.rank += 25;
+			}
+			GameSessions.push_back(temp);
+		}
+	}
+	void ShowSessions()
+	{
+		for (int i = 0; i < GameSessions.size(); i++)
+		{
+			cout << "Session " << i + 1 << "\n\n";
+			team_manager.GetTeamInfo(pl_manager, hero_manager);
+			GameSessions[i].ShowSession();
+			cout << "\n";
+		}
+	}
+};
+
+void InitializeUnits(PlayerManager& players, HeroManager& heroes)
+{
+	vector<string> player_names = { "Demka", "Demonoid", "Dumka", "Andrain", "Androker", "Antoniu", "Antroll", "Dimkrat", "Gleboomer", "Glibov", "Domestos", "Deamon", "Andrel"};
+	vector<string> hero_names = { "Pudge", "Hasagi", "Seledka", "Riven", "Stylish", "Sniper", "Kapinos", "Bariga", "Groshi", "Invokler", "Genji", "Abatur", "Ezreal", "Nikita"};
+	int random;
+	string temp_name;
+	for (int i = 0; i < 10; i++)
+	{
+		random = rand() % player_names.size();
+		temp_name = player_names[random];
+		player_names.erase(player_names.begin() + random);
+
+		players.CreatePlayer(i + 1, temp_name, 0);
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		random = rand() % hero_names.size();
+		temp_name = hero_names[random];
+		hero_names.erase(hero_names.begin() + random);
+
+		heroes.CreateHero(i + 1, temp_name, rand() % 60 + 10, rand() % 60 + 10);
+	}
+}
+
+int main()
+{
+	srand(time(NULL));
+
+	PlayerManager pl_manager;
+	HeroManager hero_manager;
+
+	InitializeUnits(pl_manager, hero_manager);
+
+	GameManager game_manager(pl_manager, hero_manager);
+
+	for (int i = 0; i < 5; i++)
+		game_manager.PerformGameSession(pl_manager;);
+
+	game_manager.ShowSessions();
+	return 0;
+}
