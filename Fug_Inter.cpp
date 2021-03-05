@@ -150,3 +150,57 @@ public:
 		}
 	}
 };
+
+class Team
+{
+public:
+	struct PlayerHero
+	{
+		Player player;
+		Hero hero;
+		PlayerHero() : player(), hero()
+		{
+		}
+	};
+
+	string name;
+	vector<PlayerHero> players;
+};
+
+class TeamManager
+{
+public:
+	vector<Team> teams;
+
+	void GenerateNewTeam(vector<Player> player, vector<Hero> hero, string _name = "")
+	{
+		this->teams;
+		teams.resize(teams.size() + 1);
+		for (int i = 0; i < 5; i++)
+		{
+			teams[teams.size() - 1].players.resize(i + 1);
+			teams[teams.size() - 1].players[i].player = player[i];
+			teams[teams.size() - 1].players[i].hero = hero[i];
+		}
+		teams[teams.size() - 1].name = _name;
+	}
+	void GetTeamInfo(PlayerManager pl_manager, HeroManager hero_manager)
+	{
+		for (const auto& elem : teams)
+		{
+			cout << elem.name << "\n";
+			for (int i = 0; i < 5; i++)
+			{
+				cout << "Player " << i + 1 << ": ";
+				pl_manager.ShowPlayerInfo(elem.players[i].player.name);
+				cout << "Hero: ";
+				hero_manager.ShowHeroInfo(elem.players[i].hero.name);
+			}
+			cout << "\n";
+		}
+	}
+	void ClearTeams()
+	{
+		teams.clear();
+	}
+};
