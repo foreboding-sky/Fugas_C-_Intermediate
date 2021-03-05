@@ -310,7 +310,7 @@ public:
 			GameSessions.push_back(temp);
 		}
 	}
-	void ShowSessions()
+	void ShowSessions(PlayerManager pl_manager)
 	{
 		for (int i = 0; i < GameSessions.size(); i++)
 		{
@@ -360,6 +360,6 @@ int main()
 	for (int i = 0; i < 5; i++)
 		game_manager.PerformGameSession(pl_manager;);
 
-	game_manager.ShowSessions();
+	game_manager.ShowSessions(pl_manager;);
 	return 0;
 }
