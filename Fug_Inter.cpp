@@ -204,3 +204,46 @@ public:
 		teams.clear();
 	}
 };
+
+class Session
+{
+public:
+	char start_time[26] = {};
+	Team team_one;
+	Team team_two;
+	Team winner;
+
+	Session(Team _team_one, Team _team_two)
+		: team_one(_team_one), team_two(_team_two)
+	{
+		auto start = chrono::system_clock::now();
+		time_t time = chrono::system_clock::to_time_t(start);
+		ctime_s(start_time, 26, &time);
+		winner = CalculateWinner(_team_one, _team_two);
+	}
+	Team CalculateWinner(Team _team_one, Team _team_two)
+	{
+		int team_one_damage = 0, team_two_damage = 0;
+		int team_one_health = 0, team_two_health = 0;
+		for (int i = 0; i < _team_one.players.size(); i++)
+		{
+			team_one_damage = _team_one.players[i].hero.damage;
+			team_one_health = _team_one.players[i].hero.hp;
+		}
+		for (int i = 0; i < _team_two.players.size(); i++)
+		{
+			team_two_damage = _team_two.players[i].hero.damage;
+			team_two_health = _team_two.players[i].hero.hp;
+		}
+		if (team_one_health - team_two_damage < team_two_health - team_one_damage)
+			return _team_two;
+		return _team_one;
+	}
+	void ShowSession()
+	{
+		cout << "Winner: " << winner.name << "\n";
+		for (auto& elem : winner.players)
+			cout << elem.player.name << "\n";
+		cout << start_time;
+	}
+};
