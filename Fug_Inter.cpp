@@ -92,3 +92,61 @@ public:
 		}
 	}
 };
+
+class HeroManager
+{
+public:
+	vector<Hero> heroes;
+
+	void CreateHero(int _id, string _name, int _hp = 0, int _damage = 0)
+	{
+		Hero new_hero(_id, _name, _hp, _damage);
+		heroes.push_back(new_hero);
+	}
+	Hero GetHeroByName(string _name)
+	{
+		for (auto& elem : heroes)
+		{
+			if (_name == elem.name)
+				return elem;
+		}
+		Hero empty(0, "Hero invalid");
+		return empty;
+	}
+	Hero GetHeroById(int _id)
+	{
+		for (auto& elem : heroes)
+		{
+			if (_id == elem.id)
+				return elem;
+		}
+		Hero empty(0, "Hero invalid");
+		return empty;
+	}
+	void DeleteHero(int _id, string _name = "")
+	{
+		this->heroes;
+		for (int i = 0; i < heroes.size(); i++)
+		{
+			if (_name == heroes[i].name || _id == heroes[i].id)
+			{
+				heroes.erase(heroes.begin() + i);
+				break;
+			}
+		}
+	}
+	void ShowHeroInfo(string _name, int _id = 0)
+	{
+		for (int i = 0; i < heroes.size(); i++)
+		{
+			if (_name == heroes[i].name || _id == heroes[i].id)
+			{
+				cout << "\nName: "   << heroes[i].name <<
+						"\tId: "     << heroes[i].id <<
+						"\tHP: "     << heroes[i].hp <<
+						"\tDamage: " << heroes[i].damage << "\n";
+				break;
+			}
+		}
+	}
+};
